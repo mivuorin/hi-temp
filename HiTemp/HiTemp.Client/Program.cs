@@ -1,5 +1,4 @@
-﻿using Avro;
-using Avro.IO;
+﻿using Avro.IO;
 using Avro.Reflect;
 using Azure.Identity;
 using Azure.Messaging.EventHubs;
@@ -19,31 +18,47 @@ var credential = new DefaultAzureCredential();
 
 await using var client = new EventHubProducerClient(eventHubNamespace, eventHubName, credential);
 
-using var batch = await client.CreateBatchAsync();
+var source = new CancellationTokenSource();
+var token = source.Token;
 
-// TODO Send messages until stopped.
-for (int i = 1; i < 4; i++)
+Console.WriteLine("Publishing events...");
+var sendingTask = Task.Run(async () =>
 {
-    var value = 0 + (random.NextDouble() * 100);
-
-    var message = new Measurement
+    var eventCount = 0;
+    while (!token.IsCancellationRequested)
     {
-        DeviceId = deviceId,
-        Value = value,
-        TimestampMs = DateTime.UtcNow,
-    };
+        using var batch = await client.CreateBatchAsync();
 
-    using var memoryStream = new MemoryStream();
-    var encoder = new BinaryEncoder(memoryStream);
-    writer.Write(message, encoder);
+        var value = 0 + (random.NextDouble() * 100);
 
-    var bytes = memoryStream.GetBuffer();
-    var data = new EventData(bytes);
+        var message = new Measurement
+        {
+            DeviceId = deviceId,
+            Value = value,
+            TimestampMs = DateTime.UtcNow,
+        };
 
-    // TODO Check error if batch size is too big. Now just ignore it.
-    batch.TryAdd(data);
-}
+        using var memoryStream = new MemoryStream();
+        var encoder = new BinaryEncoder(memoryStream);
+        writer.Write(message, encoder);
 
-await client.SendAsync(batch);
+        var bytes = memoryStream.GetBuffer();
+        var data = new EventData(bytes);
 
-Console.WriteLine("Published 3 events");
+        if (!batch.TryAdd(data))
+        {
+            throw new InvalidOperationException($"Event Hub Batch size {batch.SizeInBytes} exceeded it's maximum size {batch.MaximumSizeInBytes}.");
+        };
+
+        await client.SendAsync(batch);
+
+        Console.WriteLine("Published event {0}", ++eventCount);
+        await Task.Delay(TimeSpan.FromSeconds(1));
+    }
+
+}, source.Token);
+
+Console.WriteLine("Press any key to stop publishing...");
+Console.ReadKey();
+
+source.Cancel();
