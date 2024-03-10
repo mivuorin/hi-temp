@@ -1,0 +1,25 @@
+{
+  "namespace": "hitemp.avro",
+  "type": "record",
+  "name": "Measurement",
+  "fields": [
+    {
+      "name": "DeviceId",
+      "type": {
+        "logicalType": "uuid",
+        "type": "string"
+      }
+    },
+    {
+      "name": "Value",
+      "type": "double"
+    },
+    {
+      "name": "TimestampMs",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "long"
+      }
+    }
+  ]
+}

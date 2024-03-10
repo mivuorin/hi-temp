@@ -5,7 +5,9 @@ VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HiTemp.Client", "HiTemp.Client\HiTemp.Client.csproj", "{DB504E55-E332-4CF5-90C8-C07467E1AB05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HiTemp.Prosessor", "HiTemp.Prosessor\HiTemp.Prosessor.csproj", "{B53C4824-6528-4E6F-9145-F2906A0BD471}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HiTemp.Prosessor", "HiTemp.Prosessor\HiTemp.Prosessor.csproj", "{B53C4824-6528-4E6F-9145-F2906A0BD471}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HiTemp.Schema", "HiTemp.Schema\HiTemp.Schema.csproj", "{535A987B-86E7-48A8-AEBB-8E1E5EE5D7B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{B53C4824-6528-4E6F-9145-F2906A0BD471}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B53C4824-6528-4E6F-9145-F2906A0BD471}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B53C4824-6528-4E6F-9145-F2906A0BD471}.Release|Any CPU.Build.0 = Release|Any CPU
+		{535A987B-86E7-48A8-AEBB-8E1E5EE5D7B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{535A987B-86E7-48A8-AEBB-8E1E5EE5D7B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{535A987B-86E7-48A8-AEBB-8E1E5EE5D7B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{535A987B-86E7-48A8-AEBB-8E1E5EE5D7B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
