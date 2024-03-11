@@ -43,7 +43,10 @@ var sendingTask = Task.Run(async () =>
         writer.Write(message, encoder);
 
         var bytes = memoryStream.GetBuffer();
-        var data = new EventData(bytes);
+        var data = new EventData(bytes)
+        {
+            ContentType = "application/avro",
+        };
 
         if (!batch.TryAdd(data))
         {
