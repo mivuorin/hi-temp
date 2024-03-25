@@ -19,23 +19,23 @@ var credential = new DefaultAzureCredential();
 await using var client = new EventHubProducerClient(eventHubNamespace, eventHubName, credential);
 
 var source = new CancellationTokenSource();
-var token = source.Token;
+CancellationToken token = source.Token;
 
 Console.WriteLine("Publishing events...");
-var sendingTask = Task.Run(async () =>
+Task sendingTask = Task.Run(async () =>
 {
     var eventCount = 0;
     while (!token.IsCancellationRequested)
     {
-        using var batch = await client.CreateBatchAsync();
+        using EventDataBatch batch = await client.CreateBatchAsync();
 
-        var value = 0 + (random.NextDouble() * 100);
+        var value = 0 + random.NextDouble() * 100;
 
         var message = new Measurement
         {
             DeviceId = deviceId,
             Value = value,
-            TimestampMs = DateTime.UtcNow,
+            TimestampMs = DateTime.UtcNow
         };
 
         using var memoryStream = new MemoryStream();
@@ -45,20 +45,20 @@ var sendingTask = Task.Run(async () =>
         var bytes = memoryStream.GetBuffer();
         var data = new EventData(bytes)
         {
-            ContentType = "application/avro",
+            ContentType = "application/avro"
         };
 
         if (!batch.TryAdd(data))
         {
-            throw new InvalidOperationException($"Event Hub Batch size {batch.SizeInBytes} exceeded it's maximum size {batch.MaximumSizeInBytes}.");
-        };
+            throw new InvalidOperationException(
+                $"Event Hub Batch size {batch.SizeInBytes} exceeded it's maximum size {batch.MaximumSizeInBytes}.");
+        }
 
         await client.SendAsync(batch);
 
         Console.WriteLine("Published event {0}", ++eventCount);
         await Task.Delay(TimeSpan.FromSeconds(1));
     }
-
 }, source.Token);
 
 Console.WriteLine("Press any key to stop publishing...");
